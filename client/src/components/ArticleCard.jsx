@@ -3,13 +3,14 @@ import React from 'react';
 import { ThumbsUp, ThumbsDown, ExternalLink } from 'lucide-react';
 import axios from 'axios';
 import { useToast } from '../context/ToastContext';
+import API_BASE_URL from '../config';
 
 const ArticleCard = ({ article, onVote, onTagClick }) => {
     const { addToast } = useToast();
 
     const handleVote = async (type) => {
         try {
-            const response = await axios.post('http://localhost:3001/api/vote', {
+            const response = await axios.post(`${API_BASE_URL}/api/vote`, {
                 link: article.link,
                 type,
                 title: article.title
@@ -20,7 +21,7 @@ const ArticleCard = ({ article, onVote, onTagClick }) => {
             // Trigger interest extraction on upvote
             if (type === 'up') {
                 try {
-                    await axios.post('http://localhost:3001/api/interests/extract', {
+                    await axios.post(`${API_BASE_URL}/api/interests/extract`, {
                         prompt: article.title,
                         context: 'upvote'
                     });

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Sparkles, Plus, X, Edit2, Check, Trash2, Lightbulb, Wand2, ArrowLeft } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
+import API_BASE_URL from '../config';
 
 const InterestManager = ({ onBack }) => {
     const [interests, setInterests] = useState([]);
@@ -20,7 +21,7 @@ const InterestManager = ({ onBack }) => {
 
     const fetchInterests = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/api/interests');
+            const response = await axios.get(`${API_BASE_URL}/api/interests`);
             setInterests(response.data.interests || []);
             setSuggestions(response.data.suggestions || []);
             setLoading(false);
@@ -32,7 +33,7 @@ const InterestManager = ({ onBack }) => {
 
     const handleAcceptSuggestion = async (suggestion) => {
         try {
-            const response = await axios.post('http://localhost:3001/api/interests', {
+            const response = await axios.post(`${API_BASE_URL}/api/interests`, {
                 topic: suggestion.topic,
                 category: suggestion.category,
                 smartTag: suggestion.smartTag,
@@ -53,7 +54,7 @@ const InterestManager = ({ onBack }) => {
 
     const handleDismissSuggestion = async (id) => {
         try {
-            await axios.delete(`http://localhost:3001/api/interests/suggestions/${id}`);
+            await axios.delete(`${API_BASE_URL}/api/interests/suggestions/${id}`);
             setSuggestions(suggestions.filter(s => s.id !== id));
             showToast('Suggestion dismissed');
         } catch (error) {
@@ -68,7 +69,7 @@ const InterestManager = ({ onBack }) => {
         setSuggesting(true);
         setManualSuggestions([]); // Clear previous
         try {
-            const response = await axios.post('http://localhost:3001/api/interests/extract', {
+            const response = await axios.post(`${API_BASE_URL}/api/interests/extract`, {
                 prompt: newInterest,
                 context: 'search',
                 save: false
@@ -87,7 +88,7 @@ const InterestManager = ({ onBack }) => {
 
     const handleAddManualSuggestion = async (suggestion) => {
         try {
-            const response = await axios.post('http://localhost:3001/api/interests', {
+            const response = await axios.post(`${API_BASE_URL}/api/interests`, {
                 topic: suggestion.topic,
                 category: suggestion.category,
                 smartTag: suggestion.smartTag,
@@ -114,7 +115,7 @@ const InterestManager = ({ onBack }) => {
         if (!newInterest.trim()) return;
 
         try {
-            await axios.post('http://localhost:3001/api/interests', {
+            await axios.post(`${API_BASE_URL}/api/interests`, {
                 topic: 'Custom',
                 category: 'General',
                 description: newInterest,
@@ -145,7 +146,7 @@ const InterestManager = ({ onBack }) => {
             setEditingId(null);
             showToast('Interest updated');
 
-            await axios.put(`http://localhost:3001/api/interests/${id}`, {
+            await axios.put(`${API_BASE_URL}/api/interests/${id}`, {
                 description: editValue
             });
         } catch (error) {
@@ -162,7 +163,7 @@ const InterestManager = ({ onBack }) => {
 
     const handleDeleteInterest = async (id) => {
         try {
-            await axios.delete(`http://localhost:3001/api/interests/${id}`);
+            await axios.delete(`${API_BASE_URL}/api/interests/${id}`);
             setInterests(interests.filter(i => i.id !== id));
             showToast('Interest removed');
         } catch (error) {

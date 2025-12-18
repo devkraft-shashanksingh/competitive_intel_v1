@@ -5,6 +5,7 @@ import SkeletonCard from './SkeletonCard';
 import AIFilter from './AIFilter';
 import ProgressSteps from './ProgressSteps';
 import { ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react';
+import API_BASE_URL from '../config';
 
 const Feed = ({ category, setCategory }) => {
     const [articles, setArticles] = useState([]);
@@ -51,7 +52,7 @@ const Feed = ({ category, setCategory }) => {
                 // Simulate steps
                 setTimeout(() => setAnalysisStep(1), 800); // Analyzing
 
-                const response = await axios.get('http://localhost:3001/api/recommendations');
+                const response = await axios.get(`${API_BASE_URL}/api/recommendations`);
 
                 setAnalysisStep(2); // Recommending
                 setTimeout(() => {
@@ -71,7 +72,7 @@ const Feed = ({ category, setCategory }) => {
 
                 setLoading(false);
             } else {
-                const response = await axios.get(`http://localhost:3001/api/pharma-feed?page=${pageNum}&limit=10&category=${cat}`);
+                const response = await axios.get(`${API_BASE_URL}/api/pharma-feed?page=${pageNum}&limit=10&category=${cat}`);
                 if (Array.isArray(response.data)) {
                     setArticles(response.data);
                     setTotalPages(1);
@@ -99,7 +100,7 @@ const Feed = ({ category, setCategory }) => {
             // Simulate steps for better UX
             setTimeout(() => setAnalysisStep(1), 1000); // Analyzing
 
-            const response = await axios.post('http://localhost:3001/api/ai-filter', {
+            const response = await axios.post(`${API_BASE_URL}/api/ai-filter`, {
                 prompt,
                 category
             });
@@ -113,7 +114,7 @@ const Feed = ({ category, setCategory }) => {
 
             // Trigger interest extraction in background
             try {
-                await axios.post('http://localhost:3001/api/interests/extract', {
+                await axios.post(`${API_BASE_URL}/api/interests/extract`, {
                     prompt,
                     context: 'search'
                 });
@@ -147,7 +148,7 @@ const Feed = ({ category, setCategory }) => {
         try {
             setTimeout(() => setAnalysisStep(1), 800);
 
-            const response = await axios.post('http://localhost:3001/api/ai-filter', {
+            const response = await axios.post(`${API_BASE_URL}/api/ai-filter`, {
                 prompt: tag,
                 category: 'all'
             });

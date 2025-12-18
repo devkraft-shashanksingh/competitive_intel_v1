@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ArrowLeft, Edit2, Sparkles, ExternalLink, Loader, RefreshCw, Bookmark } from 'lucide-react';
+import API_BASE_URL from '../config';
 
 const WeeklyUpdate = ({ onBack }) => {
     const [loading, setLoading] = useState(true);
@@ -16,7 +17,7 @@ const WeeklyUpdate = ({ onBack }) => {
     const fetchUpdates = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('http://localhost:3001/api/weekly-update');
+            const response = await axios.get(`${API_BASE_URL}/api/weekly-update`);
             setUpdates(response.data.updates || []);
         } catch (error) {
             console.error('Error fetching weekly updates:', error);
@@ -44,13 +45,13 @@ const WeeklyUpdate = ({ onBack }) => {
 
         try {
             // 1. Update the interest settings (prompt)
-            await axios.put(`http://localhost:3001/api/interests/${interestId}`, {
+            await axios.put(`${API_BASE_URL}/api/interests/${interestId}`, {
                 topic: editForm.topic,
                 customPrompt: editForm.customPrompt
             });
 
             // 2. Regenerate specifically for this interest
-            const response = await axios.post(`http://localhost:3001/api/weekly-update/${interestId}/regenerate`);
+            const response = await axios.post(`${API_BASE_URL}/api/weekly-update/${interestId}/regenerate`);
 
             if (response.data.update) {
                 // 3. Update local state with new data for this interest only
